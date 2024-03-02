@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Login</h2>
+        <form>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
+                <input type="email" id="email" name="email"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    placeholder="Enter your email">
+            </div>
+            <div class="mb-6">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                <input type="password" id="password" name="password"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    placeholder="Enter your password">
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="button"
+                    class="bg-blue-500 text-white py-2 px-4 rounded focus:outline-none focus:bg-blue-600 hover:bg-blue-600"
+                    id="login">Login</button>
+                <a href="register.html"
+                    class="text-sm text-blue-500 hover:text-blue-700">Don't have an account? Sign up</a>
+            </div>
+        </form>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import{ getDatabase , ref, update} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrYuabg-KFEXS_Pe8_2b9vxV9uHFgUYC4",
+            authDomain: "html-with-fireabse.firebaseapp.com",
+            projectId: "html-with-fireabse",
+            storageBucket: "html-with-fireabse.appspot.com",
+            messagingSenderId: "108946286243",
+            appId: "1:108946286243:web:e5186945c5243d25b28116"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth();
+
+        document.getElementById('login').addEventListener('click', (e) => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            // const username = document.getElementById('username').value;
+            // const auth = getAuth();
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+
+    const dt = new Date()
+
+
+    update(ref(database, 'USERS/' + user.uid),{
+        last_login: dt.getTime()
+})
+
+alert('user logged in')
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(errorMessage)
+  });
+        });
+    </script>
+    
+</body>
+
+</html>
